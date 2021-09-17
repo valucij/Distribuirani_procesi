@@ -40,6 +40,7 @@ public class Main_console {
         serverThread.start();
         clientThread.start();
 
+
         //potreban join? jer ono... tako i tako ce se aplikacije prekinuti > za demo dovoljno?
     }
 

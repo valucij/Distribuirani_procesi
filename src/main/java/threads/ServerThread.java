@@ -1,5 +1,6 @@
 package threads;
 
+import App.Main_gui;
 import beans.ClientServerInfo;
 import database.DatabaseController;
 
@@ -19,6 +20,11 @@ import java.util.Scanner;
 public class ServerThread extends Thread{
     private final ClientServerInfo originalServer;
     private ClientServerInfo currentServer;
+    public Main_gui gui;
+
+    public void setGui(Main_gui gui){
+        this.gui = gui;
+    }
 
     public ServerThread(ClientServerInfo info){
         this.originalServer = info;
@@ -35,10 +41,20 @@ public class ServerThread extends Thread{
                 serverSocket = new ServerSocket(port);
                 clientSocket = serverSocket.accept();
                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                System.out.println("Spojio se klijent.");
+               /* String tmp = gui.logovi.getText();
+                tmp += "\n";
+                tmp += "Spojio se klijent\n";
+                gui.logovi.setText(tmp);*/
                 //ako se netko spoji na njega, treba upit potražiti
+                //System.out.println(in.read());
                 String outString = search(in.readLine());
+                //System.out.println("ovjdej je " + outString);
                 PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                out.print(outString);
+               // System.out.print("outString: " + outString);
+                out.println(outString);
+                serverSocket.close();
+                clientSocket.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -59,7 +75,8 @@ public class ServerThread extends Thread{
         String result = controller.getStringFromServer(query, "server"+id);
         int id_left_child = currentServer.getId_left_child();
         int id_right_child = currentServer.getId_right_child();
-
+        
+       // System.out.print("test ovdje je");
         //ako postoji, vrati ga
         if(result != null){
             return currentServer.getId()+","+result;

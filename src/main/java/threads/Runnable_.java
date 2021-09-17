@@ -25,6 +25,7 @@ public class Runnable_ implements Runnable{
 
         try {
             Socket socket = new Socket("localhost", port);
+            System.out.println("Spojio se na port " + port);
             OutputStream output = socket.getOutputStream();
             PrintWriter writer = new PrintWriter(output, true);
             writer.print(query);
@@ -33,6 +34,7 @@ public class Runnable_ implements Runnable{
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 
             value =  reader.readLine();
+            socket.close();
 
         } catch (IOException e) {
             e.printStackTrace();
