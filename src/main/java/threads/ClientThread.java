@@ -31,20 +31,24 @@ public class ClientThread extends Thread {
 
     }
     public void run() {
-      /*  try {
+        try {
             String[] s = search();
             String tmp = gui.logovi.getText();
             tmp += "\n";
-            tmp += "Id server: " + s[0] + ", word: " + s[1]+"\n";
+            //System.out.println(s[0]);
+            try {
+                tmp += "Id server: " + s[0] + ", word: " + s[1] + "\n";
+            }catch(ArrayIndexOutOfBoundsException ex){
+                tmp += "Not found";
+            }
+
             gui.logovi.setText(tmp);
-        } catch (SQLException e) {
+            //this.interrupt();
+            //this.stop();
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }*/
-        Scanner sc = new Scanner(System.in);
+        }
+        /*Scanner sc = new Scanner(System.in);
         //Cijelo vrijeme (do prekida aplikacije) se može tražiti u mreži ključna riječ
         while(true){
             System.out.println("Enter 'start' if you want to start search, enter 'end' if you want to end search");
@@ -64,7 +68,7 @@ public class ClientThread extends Thread {
                // break;
             }
         }
-        sc.close();
+        sc.close();*/
     }
 
     /**
@@ -77,10 +81,10 @@ public class ClientThread extends Thread {
      */
     public String[] search() throws SQLException, IOException, ClassNotFoundException {
 
-        Scanner sc = new Scanner(System.in);
+       /* Scanner sc = new Scanner(System.in);
         System.out.println("Enter query");
         String query = sc.nextLine();
-
+*/
         //int id = currentServer.getId();
         DatabaseController controller = DatabaseController.getDatabaseController();
         //prvo pogledaj postoji li kod tebe upit
@@ -107,7 +111,7 @@ public class ClientThread extends Thread {
         if(result.equals("Not found")){
             String[] r = new String[2];
             r[0] = "-1";
-            r[1] = result;
+            r[1] = "Not found";
             return r;
         }
 
@@ -130,18 +134,18 @@ public class ClientThread extends Thread {
 
         ClientServerInfo info = controller.getMyClientSeverInfo(id_child);
         int port = info.getPort();
-        //System.out.print(port);
+
         Socket socket = new Socket("localhost", port);
-        System.out.println("Spojeno na port " + port);
-        /*String tmp = gui.logovi.getText();
+        //System.out.println("Spojeno na port " + port);
+        String tmp = gui.logovi.getText();
         tmp += "\n";
         tmp += "Spojeno na port " + port+"\n";
-        gui.logovi.setText(tmp);*/
+        gui.logovi.setText(tmp);
         
         OutputStream output = socket.getOutputStream();
         PrintWriter writer = new PrintWriter(output, true);
         writer.println(query);
-        //System.out.println("Ovjde je");
+
         InputStream input = socket.getInputStream();
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));

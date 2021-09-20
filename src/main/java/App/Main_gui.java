@@ -1,8 +1,9 @@
 package App;
 
+import database.DatabaseController;
 import threads.ClientThread;
 import threads.ServerThread;
-
+import beans.ClientServerInfo;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -59,6 +60,34 @@ public class Main_gui extends JFrame {
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     }
+                }else if(tmp != null && !tmp.isEmpty() && !tmp.isBlank() && tmp.equals("-1")){
+                    DatabaseController controller = null;
+                    int id = -1;
+                    try {
+                        controller = DatabaseController.getDatabaseController();
+                        id = controller.howManyInMaster();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    id+=1;
+                    try {
+                        controller.insertIntoMasterTable(id, id+7001, 2, 1, 1);
+                        controller.createServerTable("server"+id);
+                        cs.setInfo(id);
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+
+                    clientThread = new ClientThread(cs.getInfo());
+                    serverThread = new ServerThread(cs.getInfo());
+                    serverThread.setGui(Main_gui.this);
+                    serverThread.start();
+                    clientThread.setGUI(Main_gui.this);
+                    String tmp2 = logovi.getText();
+                    //tmp2 += "\n";
+                    tmp2 += "Spojeno na mrezu\n";
+                    logovi.setText(tmp2);
+
                 }
             }
         });
@@ -70,6 +99,25 @@ public class Main_gui extends JFrame {
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = 2;
+
+        btnOdspoji.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DatabaseController controller = null;
+                try {
+                    controller = DatabaseController.getDatabaseController();
+                    controller.deleteFromMaster(cs.getInfo().getId(), "server"+cs.getInfo().getId());
+
+                    String tmp2 = logovi.getText();
+                    //tmp2 += "\n";
+                    tmp2 += "Odspojeno s mreze\n";
+                    logovi.setText(tmp2);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+            }
+        });
         cp.add(btnOdspoji, gbc);
 
 
@@ -89,7 +137,9 @@ public class Main_gui extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String query = tfQuery.getText();
                 clientThread.setQuery(query.trim());
-                clientThread.start();
+                try{clientThread.start();System.out.println("Unutar try");}catch(IllegalThreadStateException ex){System.out.println("Unutar bloka");}
+                System.out.println("Ovdje");
+
             }
         });
         cp.add(btnTrazi, gbc);

@@ -159,4 +159,17 @@ public class DatabaseController {
             return false;
         }
     }
+
+    public int howManyInMaster() throws SQLException {
+        String query = "SELECT * FROM master";
+
+        PreparedStatement stmt = con.prepareStatement(query);
+        ResultSet result = stmt.executeQuery();
+
+        int sum = 0;
+        while(result.next()){
+            sum++;
+        }
+        return sum;
+    }
 }

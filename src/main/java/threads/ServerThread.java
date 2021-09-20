@@ -41,17 +41,17 @@ public class ServerThread extends Thread{
                 serverSocket = new ServerSocket(port);
                 clientSocket = serverSocket.accept();
                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                System.out.println("Spojio se klijent.");
-               /* String tmp = gui.logovi.getText();
+                //System.out.println("Spojio se klijent.");
+                String tmp = gui.logovi.getText();
                 tmp += "\n";
                 tmp += "Spojio se klijent\n";
-                gui.logovi.setText(tmp);*/
+                gui.logovi.setText(tmp);
                 //ako se netko spoji na njega, treba upit potražiti
-                //System.out.println(in.read());
+
                 String outString = search(in.readLine());
-                //System.out.println("ovjdej je " + outString);
+
                 PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-               // System.out.print("outString: " + outString);
+
                 out.println(outString);
                 serverSocket.close();
                 clientSocket.close();
@@ -75,8 +75,7 @@ public class ServerThread extends Thread{
         String result = controller.getStringFromServer(query, "server"+id);
         int id_left_child = currentServer.getId_left_child();
         int id_right_child = currentServer.getId_right_child();
-        
-       // System.out.print("test ovdje je");
+
         //ako postoji, vrati ga
         if(result != null){
             return currentServer.getId()+","+result;
@@ -87,6 +86,7 @@ public class ServerThread extends Thread{
             ClientServerInfo info_left = controller.getMyClientSeverInfo(id_left_child);
             int port_left = info_left.getPort();
             Runnable_ left = new Runnable_(id, port_left, query);
+            left.setGUI(gui);
             Thread thread = new Thread(left);
             thread.start();
             return left.getValue();
@@ -98,6 +98,7 @@ public class ServerThread extends Thread{
             ClientServerInfo info_right = controller.getMyClientSeverInfo(id_right_child);
             int port_right = info_right.getPort();
             Runnable_ right = new Runnable_(id, port_right, query);
+            right.setGUI(gui);
             Thread threadR = new Thread(right);
             threadR.start();
             return right.getValue();

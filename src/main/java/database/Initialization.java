@@ -49,11 +49,11 @@ public class Initialization {
         insertIntoServerTable("server1", "kuca", "drvo");
 
         //drugi server-klijent
-        controller.insertIntoMasterTable(2, 7001, 1, -1, -1);
+        controller.insertIntoMasterTable(2, 7001, 1, 1, 1);
         insertIntoServerTable("server2", "sunce", "cvijet");
 
         //treci server-klijent
-        controller.insertIntoMasterTable(3, 7002, 1, -1, -1);
+        controller.insertIntoMasterTable(3, 7002, 1, 1, 1);
         insertIntoServerTable("server3", "potok", "voda");
 
     }
